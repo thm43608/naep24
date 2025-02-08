@@ -1,0 +1,103 @@
+---
+title: "2024 NAEP Advanced Performance Dashboard"
+toc: true
+toc-location: right
+format: html
+---
+
+The maps below highlight the percent of students scoring advanced on math and reading in 4th and 8th grade by state. Each map is separated into three categories with the states having the least percentage of students scoring advanced highlighted in red, the middle amount in yellow, and the most in green.
+
+## All Students
+
+<iframe src="https://thm43608.github.io/naep24/RYG_advanced_all_math_grade4_map_leaflet.html" width="100%" height="600px" style="border: none;">
+
+</iframe>
+
+<iframe src="https://thm43608.github.io/naep24/RYG_advanced_all_math_grade8_map_leaflet.html" width="100%" height="600px" style="border: none;">
+
+</iframe>
+
+<iframe src="https://thm43608.github.io/naep24/RYG_advanced_all_reading_grade4_map_leaflet.html" width="100%" height="600px" style="border: none;">
+
+</iframe>
+
+<iframe src="https://thm43608.github.io/naep24/RYG_advanced_all_reading_grade8_map_leaflet.html" width="100%" height="600px" style="border: none;">
+
+</iframe>
+
+## Economically Disadvantaged Students
+
+The maps below look at performance for students based on whether the students are economically disadvantaged or not.
+
+<iframe src="RYG_advanced_SESdisadvantaged_math_grade4_map_leaflet" width="100%" height="600px" style="border: none;">
+
+</iframe>
+
+<iframe src="https://thm43608.github.io/naep24/RYG_advanced_SES_not_disadvantaged_math_grade4_map_leaflet.html" width="100%" height="600px" style="border: none;">
+
+</iframe>
+
+You can see the longitudinal changes by economically disadvantaged status in the chart below.
+
+```{r setup, include=FALSE}
+# Load necessary libraries
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(here)
+library(here)
+df_ed_m4 <- read_excel("../../data/cleaned/Longitudinal/cleaned_2024_math_grade4_economically_disadvantaged_multiyear.Xls")
+
+# Prepare the dataset
+df_ed_national <- df_ed_m4 %>%
+  filter(Jurisdiction == "National public") %>%
+  filter(`Economically disadvantaged status` %in% c("Economically disadvantaged", "Not economically disadvantaged")) %>%
+  mutate(`at Advanced` = as.numeric(`at Advanced`)) %>%
+  arrange(Year)
+
+df_race_m4 <- read_excel("../../data/cleaned/Longitudinal/cleaned_2024_math_grade4_race_multiyear.Xls")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=5}
+ggplot(df_ed_national, aes(x = Year, y = `at Advanced`, color = `Economically disadvantaged status`, group = `Economically disadvantaged status`)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(title = "Trend of 'At Advanced' Performance Over Years",
+       subtitle = "Comparison: Economically Disadvantaged vs. Not Economically Disadvantaged",
+       x = "Year",
+       y = "Percentage of Students at Advanced Level",
+       color = "Economic Status") +
+  theme_minimal() +
+  scale_x_continuous(breaks = unique(df_ed_national$Year)) +
+  scale_y_continuous(limits = c(0, max(df_ed_national$`at Advanced`, na.rm = TRUE) + 2))
+```
+
+## Difference in Advanced Performance by Race
+
+The visualizations below look at performance for students based on race.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=5}
+
+ggplot(df_race_m4, aes(x = Year, y = `at Advanced`, color = `Race/ethnicity used to report trends, school-reported`, group = `Race/ethnicity used to report trends, school-reported`)) +
+  geom_line(linewidth = 1) +         # Line plot for trends
+  geom_point(size = 2) +             # Highlight data points
+  labs(title = "Trend of 'At Advanced' Performance Over Years",
+       subtitle = "Comparison of Race for Math Grade 4",
+       x = "Year",
+       y = "Percentage of Students at Advanced Level",
+       color = "Race") +
+  theme_minimal() +
+  scale_x_continuous(breaks = unique(df_race_m4$Year)) +  # Ensure all years are displayed
+  scale_y_continuous(limits = c(0, max(df_race_m4$`at Advanced`, na.rm = TRUE) + 2))  # Ensure proper y-axis scaling
+```
+
+## Performance by Gender for Each State
+
+You can see the math performance by gender for each state for Grades 4 and 8 by [clicking here](https://thm43608.github.io/naep24/math_gender.html){target="_blank"}.
+
+## About the Data and Maps
+
+These maps were created using [NAEP data explorer](https://www.nationsreportcard.gov/ndecore/landing){target="_blank"}.
+
+Tyler Clark created the maps on January 31, 2025. You may contact Tyler by email at [thomas.clark\@wku.edu](thomas.clark@wku.edu).
