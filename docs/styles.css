@@ -1,0 +1,11 @@
+.quarto-container {
+    max-width: 95%; /* Expands width but keeps margins */
+    margin: auto;
+}
+
+img {
+    max-width: 100%; /* Ensures images take full width */
+    height: auto;
+    display: block;
+    margin: auto;
+}
