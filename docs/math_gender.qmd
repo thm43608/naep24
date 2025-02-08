@@ -1,0 +1,47 @@
+---
+title: "State Trends in Advanced Math Performance"
+author: "Your Name"
+date: "`r Sys.Date()`"
+format: html
+execute:
+  echo: false
+---
+
+# Trends in Advanced Math Performance by State
+
+This report displays trends in the percentage of students at the **Advanced** level in **Grade 4 and Grade 8 Mathematics**.
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(knitr)
+library(tidyverse)
+library(readxl)
+library(here)
+here()
+# Load state name mapping
+states <- read_excel("../../data/states.xlsx")  # Ensure this file contains "State" and "Abbreviation"
+
+# Define output directory
+output_dir <- "output_plots/"
+image_files <- list.files(output_dir, pattern = "*.png", full.names = FALSE)  # Use relative paths
+
+# Order the images alphabetically by filename
+image_files <- sort(image_files)
+```
+
+## **State-by-State Trends**
+
+```{r, results='asis', echo=FALSE}
+# Loop through each image file and include it in the Quarto document
+for (file in image_files) {
+  # Extract state abbreviation from filename (e.g., "trend_AK.png" -> "AK")
+  state_abbr <- gsub("trend_|\\.png", "", basename(file))
+  
+  # Find the corresponding full state name
+  state_full <- states$State[match(state_abbr, states$Abbreviation)]
+  
+  # Use the full state name before the image
+  cat("###", state_full, "\n\n")  # Create a section header for each state
+  cat("![](output_plots/", file, ")\n\n", sep = "")  # Ensure correct path
+}
+```
